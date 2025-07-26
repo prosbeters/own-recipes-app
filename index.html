@@ -17,12 +17,20 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .lang-btn.active { background-color: #16a34a; color: white; font-weight: bold; }
         .recipe-steps { list-style-position: outside; padding-left: 1.25rem; }
+        .modal-backdrop { background-color: rgba(0,0,0,0.5); }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
 
     <!-- Login View -->
     <div id="login-view" class="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+        <!-- NEW: SVG Logo -->
+        <div class="mb-4 text-green-700">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-egg-fried" viewBox="0 0 16 16">
+                <path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                <path d="M13.997 5.17a5 5 0 0 0-8.101-4.09A5 5 0 0 0 1.27 6.176a5 5 0 0 0 4.09 8.102A5.001 5.001 0 0 0 15.324 7.34a5 5 0 0 0-1.327-2.17zM1.5 6.4a4 4 0 0 1 3.28-3.957 4.001 4.001 0 0 1 4.42 2.33A4.001 4.001 0 0 1 14.5 7.185a4 4 0 0 1-2.94 3.957 4.001 4.001 0 0 1-4.42-2.33A4.001 4.001 0 0 1 1.5 6.4z"/>
+            </svg>
+        </div>
         <h1 class="text-5xl font-bold font-poppins text-green-700 mb-8">Own Recipes</h1>
         <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
             <div class="text-center mb-8">
@@ -32,85 +40,74 @@
             <div id="login-error" class="hidden text-center bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4" role="alert"></div>
             <form id="login-form">
                 <div class="mb-4">
-                    <label for="email" class="block text-slate-700 text-sm font-bold mb-2">
-                        Email
-                        <span class="block font-normal text-slate-500">Email</span>
-                    </label>
+                    <label for="email" class="block text-slate-700 text-sm font-bold mb-2">Email <span class="block font-normal text-slate-500">Email</span></label>
                     <input type="email" id="email" class="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500" required>
                 </div>
                 <div class="mb-6">
-                    <label for="password" class="block text-slate-700 text-sm font-bold mb-2">
-                        Password
-                        <span class="block font-normal text-slate-500">Password</span>
-                    </label>
+                    <label for="password" class="block text-slate-700 text-sm font-bold mb-2">Password <span class="block font-normal text-slate-500">Password</span></label>
                     <input type="password" id="password" class="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-slate-700 mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500" required>
                 </div>
                 <div class="flex items-center justify-between">
-                    <button type="submit" id="login-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition-colors">
-                        Masuk
-                        <span class="block text-xs font-normal">Sign In</span>
-                    </button>
+                    <button type="submit" id="login-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition-colors">Masuk <span class="block text-xs font-normal">Sign In</span></button>
                 </div>
             </form>
         </div>
+        <p class="mt-8 text-center text-slate-600 font-bold">Made by ProsBe</p>
     </div>
 
-    <!-- Main App View (hidden by default) -->
+    <!-- Main App View -->
     <div id="main-app-view" class="hidden">
         <div class="container mx-auto p-4 md:p-8 max-w-4xl">
             <div class="flex justify-between items-center mb-4">
                 <div class="text-sm text-slate-500">
                     <span data-lang-key="loggedInAs">Masuk sebagai:</span> <span id="user-email" class="font-semibold"></span>
                 </div>
-                <div class="text-right">
+                <div class="text-right flex items-center">
                     <button id="lang-id-btn" class="lang-btn px-4 py-2 rounded-lg border border-slate-300 transition-colors">ID</button>
                     <button id="lang-en-btn" class="lang-btn px-4 py-2 rounded-lg border border-slate-300 transition-colors">EN</button>
-                    <button id="logout-button" class="ml-4 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors" data-lang-key="logoutBtn">Keluar</button>
-                </div>
-            </div>
-
-            <header class="text-center mb-8">
-                <h1 class="text-4xl md:text-5xl font-bold font-poppins text-green-700" data-lang-key="headerTitle">Own Recipes</h1>
-                <p class="text-slate-600 mt-2 text-lg" data-lang-key="headerSubtitle">Ciptakan resep sehat dari bahan-bahan yang ada di dapur Anda.</p>
-            </header>
-
-            <div class="bg-white p-6 rounded-2xl shadow-lg mb-8">
-                <h2 class="text-2xl font-bold mb-4 font-poppins" data-lang-key="inputSectionTitle">1. Masukkan Bahan Baku Anda</h2>
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <input type="text" id="ingredient-input" class="flex-grow p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" data-lang-key="ingredientPlaceholder">
-                    <button id="add-ingredient-btn" class="bg-green-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors shadow-md" data-lang-key="addIngredientBtn">
-                        Tambah Bahan
+                    <button id="help-button" class="ml-4 text-slate-600 hover:text-slate-800 p-2 rounded-full hover:bg-slate-200 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-question-circle-fill" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247zm2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z"/></svg>
                     </button>
-                </div>
-                
-                <div id="ingredient-list" class="mt-5 flex flex-wrap gap-2"></div>
-                <div class="mt-6">
-                    <label for="category-select" class="block mb-2 text-lg font-semibold text-slate-700" data-lang-key="categoryLabel">Pilih Kategori Resep:</label>
-                    <select id="category-select" class="w-full p-3 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"></select>
-                </div>
-                <div class="mt-6">
-                    <h4 class="block mb-2 text-lg font-semibold text-slate-700" data-lang-key="dietFilterLabel">Filter Diet Khusus:</h4>
-                    <div id="diet-filters" class="flex flex-wrap gap-x-6 gap-y-2"></div>
+                    <button id="settings-button" class="ml-2 text-slate-600 hover:text-slate-800 p-2 rounded-full hover:bg-slate-200 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16"><path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311a1.464 1.464 0 0 1 .872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1-.872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1-.872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1 .872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/></svg>
+                    </button>
+                    <button id="logout-button" class="ml-2 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors" data-lang-key="logoutBtn">Keluar</button>
                 </div>
             </div>
 
-            <div class="text-center mb-8">
-                <button id="generate-recipes-btn" class="bg-blue-600 text-white font-bold py-4 px-8 rounded-xl hover:bg-blue-700 transition-transform transform hover:scale-105 shadow-xl disabled:bg-slate-400 disabled:cursor-not-allowed disabled:transform-none" disabled data-lang-key="generateBtn">
-                    Buatkan 5 Rekomendasi Resep!
+            <div id="api-key-notice" class="hidden bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6 rounded-lg" role="alert">
+                <p class="font-bold" data-lang-key="apiKeyNoticeTitle">Perhatian</p>
+                <p data-lang-key="apiKeyNoticeText">Anda belum memasukkan API Key Google AI. Silakan masukkan di pengaturan untuk menggunakan aplikasi.</p>
+            </div>
+
+            <header class="text-center mb-8"><h1 class="text-4xl md:text-5xl font-bold font-poppins text-green-700" data-lang-key="headerTitle">Own Recipes</h1><p class="text-slate-600 mt-2 text-lg" data-lang-key="headerSubtitle">Ciptakan resep sehat dari bahan-bahan yang ada di dapur Anda.</p></header>
+            <div class="bg-white p-6 rounded-2xl shadow-lg mb-8"><h2 class="text-2xl font-bold mb-4 font-poppins" data-lang-key="inputSectionTitle">1. Masukkan Bahan Baku Anda</h2><div class="flex flex-col sm:flex-row gap-3"><input type="text" id="ingredient-input" class="flex-grow p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" data-lang-key="ingredientPlaceholder"><button id="add-ingredient-btn" class="bg-green-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors shadow-md" data-lang-key="addIngredientBtn">Tambah Bahan</button></div><div id="ingredient-list" class="mt-5 flex flex-wrap gap-2"></div><div class="mt-6"><label for="category-select" class="block mb-2 text-lg font-semibold text-slate-700" data-lang-key="categoryLabel">Pilih Kategori Resep:</label><select id="category-select" class="w-full p-3 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"></select></div><div class="mt-6"><h4 class="block mb-2 text-lg font-semibold text-slate-700" data-lang-key="dietFilterLabel">Filter Diet Khusus:</h4><div id="diet-filters" class="flex flex-wrap gap-x-6 gap-y-2"></div></div></div>
+            <div class="text-center mb-8"><button id="generate-recipes-btn" class="bg-blue-600 text-white font-bold py-4 px-8 rounded-xl hover:bg-blue-700 transition-transform transform hover:scale-105 shadow-xl disabled:bg-slate-400 disabled:cursor-not-allowed disabled:transform-none" disabled data-lang-key="generateBtn">Buatkan 5 Rekomendasi Resep!</button></div>
+            <div id="results-container"><div id="loader" class="hidden justify-center items-center flex-col"><div class="loader"></div><p class="mt-4 text-slate-600" data-lang-key="loaderText">AI sedang meracik resep terbaik untuk Anda...</p></div><div id="error-message" class="hidden text-center bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative" role="alert"><strong class="font-bold" data-lang-key="errorOops">Oops!</strong><span class="block sm:inline" id="error-text"></span></div><div id="recipes-output" class="space-y-8"></div></div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="hidden fixed inset-0 z-50 overflow-y-auto modal-backdrop flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 m-4">
+            <div class="flex justify-between items-center mb-4"><h3 class="text-2xl font-bold font-poppins" data-lang-key="settingsTitle">Pengaturan</h3><button id="close-settings-button" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div>
+            <div><label for="api-key-input" class="block text-sm font-medium text-gray-700" data-lang-key="apiKeyLabel">Google AI API Key</label><div class="mt-1"><input type="password" id="api-key-input" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2"></div><p class="mt-2 text-sm text-gray-500" data-lang-key="apiKeyHelp">Dapatkan API Key Anda dari Google AI Studio.</p></div>
+            <div class="mt-5 sm:mt-6 flex gap-3">
+                <button type="button" id="delete-api-key-button" class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none" data-lang-key="deleteBtnSettings">
+                    Hapus Key
+                </button>
+                <button type="button" id="save-api-key-button" class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none" data-lang-key="saveBtnSettings">
+                    Simpan
                 </button>
             </div>
+        </div>
+    </div>
 
-            <div id="results-container">
-                <div id="loader" class="hidden justify-center items-center flex-col">
-                    <div class="loader"></div>
-                    <p class="mt-4 text-slate-600" data-lang-key="loaderText">AI sedang meracik resep terbaik untuk Anda...</p>
-                </div>
-                <div id="error-message" class="hidden text-center bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative" role="alert">
-                    <strong class="font-bold" data-lang-key="errorOops">Oops!</strong>
-                    <span class="block sm:inline" id="error-text"></span>
-                </div>
-                <div id="recipes-output" class="space-y-8"></div>
-            </div>
+    <!-- Help Modal -->
+    <div id="help-modal" class="hidden fixed inset-0 z-50 overflow-y-auto modal-backdrop flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl p-6 m-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4 sticky top-0 bg-white pb-4 border-b"><h3 class="text-2xl font-bold font-poppins" data-lang-key="helpTitle">Petunjuk Penggunaan</h3><button id="close-help-button" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button></div>
+            <div class="prose max-w-none text-slate-700" id="help-content-container"></div>
         </div>
     </div>
 
@@ -136,13 +133,13 @@
 
         const translations = {
             id: {
-                logoutBtn: "Keluar", loggedInAs: "Masuk sebagai:",
+                logoutBtn: "Keluar", loggedInAs: "Masuk sebagai:", apiKeyNoticeTitle: "Perhatian", apiKeyNoticeText: "Anda belum memasukkan API Key Google AI. Silakan masukkan di pengaturan untuk menggunakan aplikasi.", settingsTitle: "Pengaturan", apiKeyLabel: "Google AI API Key", apiKeyHelp: "Dapatkan API Key Anda dari Google AI Studio.", saveBtnSettings: "Simpan", deleteBtnSettings: "Hapus Key", helpTitle: "Petunjuk Penggunaan",
                 headerTitle: "Own Recipes", headerSubtitle: "Ciptakan resep sehat dari bahan-bahan yang ada di dapur Anda.", inputSectionTitle: "1. Masukkan Bahan Baku Anda", ingredientPlaceholder: "Contoh: Dada ayam, brokoli, bawang putih", addIngredientBtn: "Tambah Bahan", emptyIngredientList: "Belum ada bahan yang ditambahkan.", categoryLabel: "Pilih Kategori Resep:", dietFilterLabel: "Filter Diet Khusus:", generateBtn: "Buatkan 5 Rekomendasi Resep!", loaderText: "AI sedang meracik resep terbaik untuk Anda...", errorOops: "Oops!", genericError: "Terjadi kesalahan. Silakan coba lagi.", invalidResponseError: "Respon dari AI tidak valid atau kosong.", fetchError: "Gagal mendapatkan resep.", noRecipeFound: "Maaf, tidak ada resep yang bisa dibuat dari bahan-bahan tersebut.", resultsTitle: "2. Ini Rekomendasi Resep Untukmu!", ingredientsHeader: "Bahan-bahan:", stepsHeader: "Cara Memasak:", nutritionHeader: "Informasi Nutrisi (Perkiraan)", calories: "Kalori", protein: "Protein", carbs: "Karbo", fat: "Lemak", saveBtn: "Simpan PDF", timeLabel: "Waktu", difficultyLabel: "Kesulitan",
                 categories: { "Apa Saja": "Apa Saja (Kejutkan Saya!)", "Makanan Utama": "Makanan Utama", "Sarapan": "Sarapan", "Hidangan Penutup": "Hidangan Penutup", "Kue Basah / Cake": "Kue Basah / Cake", "Kue Kering / Cookies": "Kue Kering / Cookies", "Minuman": "Minuman", "Camilan / Snack": "Camilan / Snack", "Salad": "Salad", "Sup": "Sup" },
                 dietFilters: { "None": "Tidak Ada", "Vegetarian": "Vegetarian", "Vegan": "Vegan", "Gluten-Free": "Bebas Gluten" }
             },
             en: {
-                logoutBtn: "Logout", loggedInAs: "Logged in as:",
+                logoutBtn: "Logout", loggedInAs: "Logged in as:", apiKeyNoticeTitle: "Attention", apiKeyNoticeText: "You have not entered a Google AI API Key. Please enter it in the settings to use the application.", settingsTitle: "Settings", apiKeyLabel: "Google AI API Key", apiKeyHelp: "Get your API Key from Google AI Studio.", saveBtnSettings: "Save", deleteBtnSettings: "Delete Key", helpTitle: "Instructions",
                 headerTitle: "Own Recipes", headerSubtitle: "Create healthy recipes from the ingredients in your kitchen.", inputSectionTitle: "1. Enter Your Ingredients", ingredientPlaceholder: "e.g., Chicken breast, broccoli, garlic", addIngredientBtn: "Add Ingredient", emptyIngredientList: "No ingredients have been added yet.", categoryLabel: "Select Recipe Category:", dietFilterLabel: "Special Diet Filters:", generateBtn: "Get 5 Recipe Recommendations!", loaderText: "AI is crafting the best recipes for you...", errorOops: "Oops!", genericError: "An error occurred. Please try again.", invalidResponseError: "Invalid or empty response from the AI.", fetchError: "Failed to get recipes.", noRecipeFound: "Sorry, no recipes could be created from these ingredients.", resultsTitle: "2. Here Are Your Recipe Recommendations!", ingredientsHeader: "Ingredients:", stepsHeader: "Instructions:", nutritionHeader: "Nutrition Facts (Estimate)", calories: "Calories", protein: "Protein", carbs: "Carbs", fat: "Fat", saveBtn: "Save as PDF", timeLabel: "Time", difficultyLabel: "Difficulty",
                 categories: { "Apa Saja": "Anything (Surprise Me!)", "Makanan Utama": "Main Course", "Sarapan": "Breakfast", "Hidangan Penutup": "Dessert", "Kue Basah / Cake": "Cakes", "Kue Kering / Cookies": "Cookies", "Minuman": "Beverages", "Camilan / Snack": "Snacks", "Salad": "Salad", "Sup": "Soup" },
                 dietFilters: { "None": "None", "Vegetarian": "Vegetarian", "Vegan": "Vegan", "Gluten-Free": "Gluten-Free" }
@@ -155,6 +152,17 @@
         const loginError = document.getElementById('login-error');
         const logoutButton = document.getElementById('logout-button');
         const userEmailSpan = document.getElementById('user-email');
+        const settingsButton = document.getElementById('settings-button');
+        const settingsModal = document.getElementById('settings-modal');
+        const closeSettingsButton = document.getElementById('close-settings-button');
+        const saveApiKeyButton = document.getElementById('save-api-key-button');
+        const deleteApiKeyButton = document.getElementById('delete-api-key-button');
+        const apiKeyInput = document.getElementById('api-key-input');
+        const apiKeyNotice = document.getElementById('api-key-notice');
+        const helpButton = document.getElementById('help-button');
+        const helpModal = document.getElementById('help-modal');
+        const closeHelpButton = document.getElementById('close-help-button');
+        const helpContentContainer = document.getElementById('help-content-container');
 
         const langIdBtn = document.getElementById('lang-id-btn');
         const langEnBtn = document.getElementById('lang-en-btn');
@@ -169,19 +177,45 @@
         const errorMessage = document.getElementById('error-message');
         const errorText = document.getElementById('error-text');
         
+        function saveApiKey() {
+            const apiKey = apiKeyInput.value.trim();
+            if (apiKey) {
+                localStorage.setItem('googleApiKey', apiKey);
+                settingsModal.classList.add('hidden');
+                checkApiKey();
+            }
+        }
+
+        function deleteApiKey() {
+            localStorage.removeItem('googleApiKey');
+            apiKeyInput.value = '';
+            settingsModal.classList.add('hidden');
+            checkApiKey();
+        }
+
+        function checkApiKey() {
+            const apiKey = localStorage.getItem('googleApiKey');
+            if (!apiKey) {
+                apiKeyNotice.classList.remove('hidden');
+            } else {
+                apiKeyNotice.classList.add('hidden');
+            }
+        }
+
         onAuthStateChanged(auth, user => {
             if (user) {
                 loginView.classList.add('hidden');
                 mainAppView.classList.remove('hidden');
                 userEmailSpan.textContent = user.email;
                 setLanguage(currentLanguage || 'id');
+                checkApiKey();
             } else {
                 loginView.classList.remove('hidden');
                 mainAppView.classList.add('hidden');
-                // NEW: Clear the form fields on logout
                 loginForm.email.value = '';
                 loginForm.password.value = '';
                 loginError.classList.add('hidden');
+                localStorage.removeItem('googleApiKey');
             }
         });
 
@@ -190,19 +224,23 @@
             const email = loginForm.email.value;
             const password = loginForm.password.value;
             signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    loginError.classList.add('hidden');
-                })
+                .then(() => loginError.classList.add('hidden'))
                 .catch((error) => {
-                    console.error("Login error:", error);
                     loginError.textContent = error.message;
                     loginError.classList.remove('hidden');
                 });
         });
 
-        logoutButton.addEventListener('click', () => {
-            signOut(auth);
+        logoutButton.addEventListener('click', () => signOut(auth));
+        settingsButton.addEventListener('click', () => {
+            apiKeyInput.value = localStorage.getItem('googleApiKey') || '';
+            settingsModal.classList.remove('hidden');
         });
+        closeSettingsButton.addEventListener('click', () => settingsModal.classList.add('hidden'));
+        saveApiKeyButton.addEventListener('click', saveApiKey);
+        deleteApiKeyButton.addEventListener('click', deleteApiKey);
+        helpButton.addEventListener('click', () => helpModal.classList.remove('hidden'));
+        closeHelpButton.addEventListener('click', () => helpModal.classList.add('hidden'));
 
         function resetState() {
             ingredients = [];
@@ -216,18 +254,14 @@
             const isInitialLoad = currentLanguage === null;
             currentLanguage = lang;
             document.documentElement.lang = lang;
-            if (!isInitialLoad) {
-                resetState();
-            }
+            if (!isInitialLoad) resetState();
+            
             document.querySelectorAll('[data-lang-key]').forEach(el => {
                 const key = el.getAttribute('data-lang-key');
                 const translation = translations[lang][key];
                 if (translation) {
-                    if (el.placeholder !== undefined) {
-                        el.placeholder = translation;
-                    } else {
-                        el.textContent = translation;
-                    }
+                    if (el.placeholder !== undefined) el.placeholder = translation;
+                    else el.textContent = translation;
                 }
             });
 
@@ -240,9 +274,7 @@
                 option.textContent = categories[key];
                 categorySelect.appendChild(option);
             }
-            if (Object.keys(categories).includes(currentCategoryValue)) {
-                categorySelect.value = currentCategoryValue;
-            }
+            if (Object.keys(categories).includes(currentCategoryValue)) categorySelect.value = currentCategoryValue;
 
             dietFiltersContainer.innerHTML = '';
             const dietFilters = translations[lang].dietFilters;
@@ -267,6 +299,62 @@
             langIdBtn.classList.toggle('active', lang === 'id');
             langEnBtn.classList.toggle('active', lang === 'en');
             renderIngredients();
+            populateHelpContent();
+        }
+        
+        function populateHelpContent() {
+            const lang = currentLanguage;
+            const content = {
+                id: `
+                    <h3 class="text-xl font-bold mb-2">Selamat Datang di Own Recipes!</h3>
+                    <p class="mb-4">Aplikasi ini adalah asisten masak cerdas Anda. Cukup beritahu kami bahan apa yang Anda punya, dan kami akan membuatkan resep lezat dan sehat khusus untuk Anda.</p>
+                    <p class="mb-4">Agar aplikasi ini bisa "berpikir", ia perlu terhubung ke "otak" Google AI dengan sebuah "kunci" khusus yang disebut <strong>API Key</strong>. Anggap saja ini seperti password unik Anda.</p>
+                    
+                    <h4 class="text-lg font-bold mt-6 mb-2">Bagian 1: Cara Mendapatkan API Key Google AI (Gratis)</h4>
+                    <ol class="list-decimal list-inside space-y-2 mb-4">
+                        <li><strong>Buka Google AI Studio:</strong> Klik link ini <a href="https://aistudio.google.com/" target="_blank" class="text-blue-600 hover:underline">aistudio.google.com</a> dan masuk dengan akun Google Anda.</li>
+                        <li><strong>Buat API Key Baru:</strong> Cari dan klik tombol <strong>"Get API key"</strong>, lalu pilih <strong>"Create API key in new project"</strong>.</li>
+                        <li><strong>Salin (Copy) Kunci Anda:</strong> Sebuah kode panjang akan muncul. Itulah API Key Anda! Klik ikon salin di sebelahnya.</li>
+                    </ol>
+
+                    <h4 class="text-lg font-bold mt-6 mb-2">Bagian 2: Cara Menggunakan Aplikasi</h4>
+                    <ol class="list-decimal list-inside space-y-2">
+                        <li><strong>Login:</strong> Masukkan email dan password Anda yang terdaftar.</li>
+                        <li><strong>Masukkan API Key:</strong> Klik ikon gerigi (⚙️), tempel (paste) API Key Anda, lalu klik "Simpan". Ini hanya perlu dilakukan sekali (kecuali Anda logout).</li>
+                        <li><strong>Masukkan Bahan:</strong> Ketik bahan yang Anda punya satu per satu dan klik "Tambah Bahan".</li>
+                        <li><strong>Atur Pilihan (Opsional):</strong> Pilih kategori resep atau filter diet jika perlu.</li>
+                        <li><strong>Buat Resep:</strong> Klik tombol biru besar untuk melihat keajaibannya!</li>
+                        <li><strong>Lihat dan Simpan:</strong> Jelajahi resep yang dihasilkan. Suka? Klik "Simpan PDF" untuk mengunduhnya.</li>
+                        <li><strong>Logout:</strong> Klik "Keluar" jika sudah selesai. API Key Anda akan terhapus otomatis dari browser.</li>
+                    </ol>
+                    <p class="mt-6 font-semibold">Selamat memasak!</p>
+                `,
+                en: `
+                    <h3 class="text-xl font-bold mb-2">Welcome to Own Recipes!</h3>
+                    <p class="mb-4">This app is your smart cooking assistant. Just tell us what ingredients you have, and we'll create delicious and healthy recipes just for you.</p>
+                    <p class="mb-4">For the app to "think", it needs to connect to the Google AI "brain" with a special "key" called an <strong>API Key</strong>. Think of it as your unique password.</p>
+                    
+                    <h4 class="text-lg font-bold mt-6 mb-2">Part 1: How to Get a Google AI API Key (Free)</h4>
+                    <ol class="list-decimal list-inside space-y-2 mb-4">
+                        <li><strong>Open Google AI Studio:</strong> Click this link <a href="https://aistudio.google.com/" target="_blank" class="text-blue-600 hover:underline">aistudio.google.com</a> and sign in with your Google account.</li>
+                        <li><strong>Create a New API Key:</strong> Find and click the <strong>"Get API key"</strong> button, then select <strong>"Create API key in new project"</strong>.</li>
+                        <li><strong>Copy Your Key:</strong> A long code will appear. That's your API Key! Click the copy icon next to it.</li>
+                    </ol>
+
+                    <h4 class="text-lg font-bold mt-6 mb-2">Part 2: How to Use the App</h4>
+                    <ol class="list-decimal list-inside space-y-2">
+                        <li><strong>Login:</strong> Enter your registered email and password.</li>
+                        <li><strong>Enter Your API Key:</strong> Click the gear icon (⚙️), paste your API Key, and click "Save". You only need to do this once (unless you log out).</li>
+                        <li><strong>Add Ingredients:</strong> Type your ingredients one by one and click "Add Ingredient".</li>
+                        <li><strong>Set Preferences (Optional):</strong> Choose a recipe category or a diet filter if needed.</li>
+                        <li><strong>Generate Recipes:</strong> Click the big blue button to see the magic!</li>
+                        <li><strong>View and Save:</strong> Explore the generated recipes. Like one? Click "Save as PDF" to download it.</li>
+                        <li><strong>Logout:</strong> Click "Logout" when you're done. Your API Key will be automatically removed from the browser.</li>
+                    </ol>
+                    <p class="mt-6 font-semibold">Happy cooking!</p>
+                `
+            };
+            helpContentContainer.innerHTML = content[lang];
         }
 
         function renderIngredients() {
@@ -288,9 +376,7 @@
         function addIngredient() {
             const ingredient = ingredientInput.value.trim();
             if (ingredient) {
-                if (!ingredients.includes(ingredient)) {
-                    ingredients.push(ingredient);
-                }
+                if (!ingredients.includes(ingredient)) ingredients.push(ingredient);
                 ingredientInput.value = '';
                 renderIngredients();
             }
@@ -347,36 +433,26 @@
 
                 let ingredientsHtml = recipe.ingredients.map(item => `<li class="flex items-start"><span class="mr-2 text-green-500 flex-shrink-0">✓</span><span>${item}</span></li>`).join('');
                 let stepsHtml = recipe.steps.map(step => `<li>${step}</li>`).join('');
-                
                 let nutritionHtml = '';
                 if (recipe.nutrition) {
                     nutritionHtml = `<div class="mt-4 pt-4 border-t border-slate-200"><h4 class="text-lg font-semibold mb-2">${translations[currentLanguage].nutritionHeader}</h4><div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center"><div class="bg-blue-50 p-2 rounded-lg"><span class="text-sm text-slate-600">${translations[currentLanguage].calories}</span><p class="font-bold text-blue-800">${recipe.nutrition.calories || 'N/A'}</p></div><div class="bg-green-50 p-2 rounded-lg"><span class="text-sm text-slate-600">${translations[currentLanguage].protein}</span><p class="font-bold text-green-800">${recipe.nutrition.protein || 'N/A'}</p></div><div class="bg-orange-50 p-2 rounded-lg"><span class="text-sm text-slate-600">${translations[currentLanguage].carbs}</span><p class="font-bold text-orange-800">${recipe.nutrition.carbs || 'N/A'}</p></div><div class="bg-red-50 p-2 rounded-lg"><span class="text-sm text-slate-600">${translations[currentLanguage].fat}</span><p class="font-bold text-red-800">${recipe.nutrition.fat || 'N/A'}</p></div></div></div>`;
                 }
-
                 let detailsHtml = '';
                 if (recipe.time && recipe.difficulty) {
                     detailsHtml = `<div class="flex items-center gap-6 text-sm text-gray-600 mb-4 border-b pb-4"><div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/></svg><div><p class="font-semibold" data-lang-key="timeLabel">${translations[currentLanguage].timeLabel}</p><p>${recipe.time}</p></div></div><div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-bar-chart-line" viewBox="0 0 16 16"><path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2z"/></svg><div><p class="font-semibold" data-lang-key="difficultyLabel">${translations[currentLanguage].difficultyLabel}</p><p>${recipe.difficulty}</p></div></div></div>`;
                 }
-
-                recipeCard.innerHTML = `
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="text-2xl font-bold font-poppins text-green-700 pr-4">${recipe.recipeName}</h3>
-                        <button onclick="saveRecipeAsPdf('${cardId}', '${recipe.recipeName.replace(/'/g, "\\'")}')" class="save-pdf-btn flex-shrink-0 flex items-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-3 rounded-lg transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg>
-                            <span data-lang-key="saveBtn">${translations[currentLanguage].saveBtn}</span>
-                        </button>
-                    </div>
-                    ${detailsHtml}
-                    <div class="grid md:grid-cols-2 gap-x-8 gap-y-4">
-                        <div><h4 class="text-lg font-semibold mb-2">${translations[currentLanguage].ingredientsHeader}</h4><ul class="space-y-1 text-slate-700">${ingredientsHtml}</ul></div>
-                        <div><h4 class="text-lg font-semibold mb-2">${translations[currentLanguage].stepsHeader}</h4><ol class="recipe-steps space-y-2 text-slate-700">${stepsHtml}</ol></div>
-                    </div>
-                    ${nutritionHtml}`;
+                recipeCard.innerHTML = `<div class="flex justify-between items-start mb-2"><h3 class="text-2xl font-bold font-poppins text-green-700 pr-4">${recipe.recipeName}</h3><button onclick="saveRecipeAsPdf('${cardId}', '${recipe.recipeName.replace(/'/g, "\\'")}')" class="save-pdf-btn flex-shrink-0 flex items-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-3 rounded-lg transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg><span data-lang-key="saveBtn">${translations[currentLanguage].saveBtn}</span></button></div>${detailsHtml}<div class="grid md:grid-cols-2 gap-x-8 gap-y-4"><div><h4 class="text-lg font-semibold mb-2">${translations[currentLanguage].ingredientsHeader}</h4><ul class="space-y-1 text-slate-700">${ingredientsHtml}</ul></div><div><h4 class="text-lg font-semibold mb-2">${translations[currentLanguage].stepsHeader}</h4><ol class="recipe-steps space-y-2 text-slate-700">${stepsHtml}</ol></div></div>${nutritionHtml}`;
                 recipesOutput.appendChild(recipeCard);
             });
         }
 
         async function generateRecipes() {
+            const apiKey = localStorage.getItem('googleApiKey');
+            if (!apiKey) {
+                showError('apiKeyNoticeText');
+                settingsModal.classList.remove('hidden');
+                return;
+            }
             loader.classList.remove('hidden');
             loader.classList.add('flex');
             recipesOutput.innerHTML = '';
@@ -385,7 +461,6 @@
 
             const selectedCategory = categorySelect.value;
             const lang = currentLanguage;
-
             const selectedDiets = Array.from(dietFiltersContainer.querySelectorAll('input:checked')).map(cb => cb.value).filter(value => value !== 'None');
             let dietInstruction = '';
             if (selectedDiets.length > 0) {
@@ -421,7 +496,6 @@
             };
 
             try {
-                const apiKey = "";
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 if (!response.ok) {
@@ -474,6 +548,8 @@
                 if (noneCheckbox) noneCheckbox.checked = false;
             }
         });
+
+        setLanguage('id'); // Initial load
     </script>
 </body>
 </html>
