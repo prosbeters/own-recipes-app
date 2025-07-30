@@ -139,16 +139,14 @@
         
         // --- API Key Logic ---
         async function validateApiKey(apiKey) {
-            // FIX: Use the same model as the main app for consistent validation
-            const validationUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            // FIX: Use a consistent and up-to-date model for validation
+            const validationUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
             try {
                 const response = await fetch(validationUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: "test" }] }] })
                 });
-                // A 400 error means the key is valid but the request is bad, which is fine for a test.
-                // A 401 or 403 error means the key is invalid.
                 return response.ok || response.status === 400;
             } catch (error) {
                 console.error("Validation request failed:", error);
@@ -496,7 +494,8 @@
             };
 
             try {
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                // FIX: Use the same, consistent model name as the validation function
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 if (!response.ok) {
                     const errorData = await response.json();
